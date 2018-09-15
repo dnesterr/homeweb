@@ -1,7 +1,4 @@
 # homeweb
 The website used at my house
 
-Currently there are three facets
-1) Stories the children can drift off to sleep to
-2) A To-do list application to allow us to track responsibilities
-3) The wiki server so desire can write stories anytime she wants.
+Inspect: a way for kids to log pictures of their jobs before and after they do them, along with a view for parents
