@@ -1,15 +1,13 @@
-function openTab(evt, tabName) {
+function openTab(evt, orientation, cityName) {
     var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
+    tabcontent = document.getElementsByClassName(orientation + "_tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
     }
-    tablinks = document.getElementsByClassName("tablinks");
+    tablinks = document.getElementsByClassName(orientation + "_tablinks");
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
-    document.getElementById(tabName).style.display = "block";
+    document.getElementById(cityName).style.display = "block";
     evt.currentTarget.className += " active";
 }
-
-

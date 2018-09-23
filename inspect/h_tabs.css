@@ -1,0 +1,38 @@
+/* Style the h_tab */
+.h_tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the h_tab */
+.h_tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.h_tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current h_tablink class */
+.h_tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the h_tab content */
+.h_tabcontent {
+    display: none;
+    /*
+    padding: 6px 12px;
+    border: 1px dashed red;
+    */
+    border-top: none;
+}
