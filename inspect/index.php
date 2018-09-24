@@ -1,63 +1,18 @@
+<!DOCTYPE html>
 <html>
- <head>
-  <title>Daily inspections</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="horizontal_tabs.css">
-  <link rel="stylesheet" href="vertical_tabs.css">
-  <!--<script src="tabs.js">-->
- </head>
-
- <body>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="v_tabs.css">
+    <link rel="stylesheet" href="h_tabs.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="tabs.js"></script>
+  </head>
+  <body>
 
 <?php 
-$datePath = "../uploads/".date("Y_m_d");
-$idealPath = "../uploads/ideal";
-$defaultAreaName = "Dishes";
-$defaultKidName = "Elijah";
 
-// Debugging
-if (isset($_GET["date"])){ 
-    $datePath = $_GET["date"];
-} else {
-    createFolder($datePath);
-    createFolder($idealPath);
-}
-
-// create a folder based on the current date
-// We will store the uploaded inspection photos there
-function createFolder($datePath) {
-    if (!file_exists($datePath)){
-        if (!mkdir($datePath)){
-            echo "\n<H1>Tell dad there was a directory problem</h1>";
-            return;
-        }
-    }
-}
-
-function printRow($location){
-    if (file_exists($location)){
-        echo '<td> ';
-        echo '<img src="' . $location. '". width=250 height=250> ';
-        if (isset($_GET["date"])){ 
-            echo '<br/>'.exif_read_data($location)["DateTimeOriginal"];
-        }
-        echo '</td>';
-    } else {
-        echo '<td> ';
-        echo '<form action="upload.php" method="post" enctype="multipart/form-data">';
-        echo '<input type="file" name="fileToUpload">';
-        echo '<input type="hidden" name="UseThisName" value="'.$location.'">';
-        echo '<input type="hidden" name="SelectedTab" value="'.$location.'">';
-        echo '<br/>';
-        echo '<input type="submit" value="Upload Image" name="submit">';
-        echo '</form>';
-        echo '</td>';
-    }
-}
-$kids["Desire"] = array("Dishes", "Laundry", "Desire_Bedroom");
-$kids["Elijah"] = array("Back_Yard", "Basement", "Basement_Bathroom", "Bathroom", "Elijah_Bedroom", "Front_Yard", "Living_Room");
+$kids["Desire"] = array("Dishes", "Laundry", "Desire_Bedroom", "Viola");
+$kids["Elijah"] = array("Back_Yard", "Basement", "Basement_Bathroom", "Bathroom", "Elijah_Bedroom", "Front_Yard", "Living_Room", "Cello");
 $kids["Noah"] = array("Kitchen", "Entryway", "Noah_Bedroom", "Upstairs");
 $kids["Enoch"] = array("Enoch_Bedroom");
 
@@ -76,114 +31,148 @@ $areas["Laundry"]           = array("dirty_hampers", "clean_hampers", "washer", 
 $areas["Living_Room"]       = array("floor", "hallway");
 $areas["Noah_Bedroom"]      = array("hamper", "under_bed", "closet", "floor", "pegs");
 $areas["Upstairs"]          = array("purple_room", "main_room", "entry", "triangle_closet");
+$areas["Cello"]             = array("daily_practice");
+$areas["Viola"]             = array("daily_practice");
 
+
+makePage($kids);
+
+function makePage($kids){
+  echo "\n<h1>" . date("M d, Y") . "</h1>";
+  echo makeTabBar("h", array_keys($kids));
+  foreach ($kids as $name => $items) {
+    echo makeTabContent("h", $items, $name, "makeKidContent");
+  }
+}
+function makeTabBar($orientation, $collection){
+  $result = sprintf("\n  <div class='%s_tab'>", $orientation);
+  foreach ($collection as $name) {
+    $result .= makeTabButton($orientation, $name);
+  }
+  $result .= "\n  </div>";
+  return $result;
+}
+function makeTabButton($orientation, $kidName){
+    return sprintf("\n    <button class='%s_tablinks' %s onclick='openTab(event, \"%s\", \"%s\")'>%s</button>",
+        $orientation,
+        "", // This will be 'id=defaultXYZ'
+        $kidName,
+        $orientation,
+        no_($kidName)
+    );
+}
 function no_($name){
     return str_replace("_", " ", $name);
 }
 
+function makeTabContent($orientation, $collection, $id, $fcnToCall){
+    $result = sprintf("\n  <div id='%s' class='%s_tabcontent'>", $id, $orientation);
+    //$result .= "\n    content for ". $id;
+    $result .= $fcnToCall($id);
+    $result .= "\n  </div>";
+    return $result;
+}
+
+function makeKidContent($kidName){
+  global $kids;
+  $result = makeTabBar('v', $kids[$kidName]);
+  foreach ($kids[$kidName] as $areaName) {
+    $result .= makeTabContent('v', $kids[$kidName], $areaName, "makeInspectionTable");
+  }
+  return $result;
+}
+
+function makeInspectionTable($areaName){
+  $result = startTable($areaName);
+  $result .= populateTable($areaName);
+  $result .= endTable();
+  return $result;
+}
+
 function startTable($areaName){
-    echo "<h1>" . date("M d, Y") . "<br/>" . no_($areaName) . "</h1>";
-    echo '<table border="2">';
-    echo ' <tbody>          ';
-    echo '  <th>Area</th>   ';
-    echo '  <th>Before</th> ';
-    echo '  <th>After</th>  ';
-    echo '  <th>Ideal</th>  ';
+    $result = "\n   <table border='2'>";
+    $result .= "\n    <tbody>          ";
+    $result .= "\n     <th>Area</th>   ";
+    $result .= "\n     <th>Before</th> ";
+    $result .= "\n     <th>After</th>  ";
+    $result .= "\n     <th>Ideal</th>  ";
+    return $result;
+}
+
+function populateTable($areaName){
+  global $areas;
+  $result = "";
+  $areaItems = $areas[$areaName];
+  $areaCount = count($areaItems);
+  for ($index = 0; $index < $areaCount; $index++) {
+    $inspectionSpot = $areaItems[$index];
+    $result .= printRow($inspectionSpot, $areaName);
+  }
+  return $result;
+}
+
+function printRow($inspectionSpot, $areaName){
+  $result = "\n    <tr>";
+  $result .= "\n      <td><h3>" . no_($inspectionSpot) . "</h3></td>";
+  $name = $areaName . "_".$inspectionSpot;
+  $result .= printCell(dateLocation($name, "before"));
+  $result .= printCell(dateLocation($name, "after"));
+  $result .= printCell(idealLocation($name));
+  $result .= "</tr>";
+  return $result;
+}
+
+function dateLocation($name, $suffix){
+  global $datePath;
+  return sprintf("%s/%s_%s.jpg", $datePath, $name, $suffix);
+}
+
+function idealLocation($name){
+  global $idealPath;
+  return sprintf("%s/%s.jpg", $idealPath, $name);
+}
+
+
+function printCell($location){
+    if (file_exists($location)){
+      return renderImage($location);
+    } else {
+      return renderUploadButtons($location);
+    }
+}
+
+function renderImage($location){
+  $result = '<td> ';
+  $result .= '<img src="' . $location. '". width=250 height=250> ';
+  if (isset($_GET["date"])){ 
+    $result .= '<br/>'.exif_read_data($location)["DateTimeOriginal"];
+  }
+  $result .= '</td>';
+  return $result;
+}
+
+function renderUploadButtons($location){
+  $result = '<td> ';
+  $result .= '<form action="upload.php" method="post" enctype="multipart/form-data">';
+  $result .= '<input type="file" name="fileToUpload">';
+  $result .= '<input type="hidden" name="UseThisName" value="'.$location.'">';
+  $result .= '<input type="hidden" name="SelectedTab" value="'.$location.'">';
+  $result .= '<br/>';
+  $result .= '<input type="submit" value="Upload Image" name="submit">';
+  $result .= '</form>';
+  $result .= '</td>';
+  return $result;
 }
 
 function endTable(){
-    echo '</tbody>';
-    echo '</table>';
+    $result  = "\n    </tbody>";
+    $result .= "\n   </table>";
+    return $result;
 }
-
-function kidContent($kidName, $kidAreas, $areas){
-    $tabContent = "\n<div id='$kidName' class='horizontal_tabcontent' style='display:none'>";
-    $tabContent .= "Hello $kidName"; 
-    $tabContent .= setupAreaTabs($kidName, $kidAreas, $areas);
-    $tabContent .= "\n</div>"; 
-    return $tabContent;
-}
-
-function setupKidTabs($kids, $areas) {
-    global $defaultKidName;
-    echo "\n<div class='horizontal_tab'>";
-    $tabContent = "";
-    foreach ($kids as $kidName => $kidAreaNames) {
-        $id = (($kidName == $defaultKidName)?"id='defaultKid'":"");
-        echo "\n  <button class='tablinks' $id onclick='openTab(event, \"$kidName\", \"horizontal\")'>" . no_($kidName) . "</button>";
-        $tabContent .= kidContent($kidName, $kidAreas, $areas);
-    }
-    echo "\n</div>";
-    echo $tabContent;
-}
-
-function kidTabContent($areaName, $areaItems){
-    $areaCount = count($areaItems);
-    for ($index = 0; $index < $areaCount; $index++) {
-        echo "<tr>";
-        echo '<td><h3>' . str_replace("_", " ", $areaItems[$index]) . '</h3></td>';
-        echo printRow($datePath . "/".$areaName."_".$areaItems[$index]."_before.jpg");
-        echo printRow($datePath . "/".$areaName."_".$areaItems[$index]."_after.jpg");
-        echo printRow($idealPath. "/".$areaName."_".$areaItems[$index].".jpg");
-        echo "</tr>";
-    }
-    endTable();
-}
-
-function setupAreaTabs($kidName, $kidAreas, $areas)
-    echo "\n<div class='vertical_tab'>";
-    foreach ($areas as $areaName => $areaItems) {
-        echo "\n  <button class='tablinks' onclick='openTab(event, \"$areaName\", \"horizontal\")'>" . no_($areaName) . "</button>";
-    }
-    echo "\n</div>";
-
-    foreach ($areas as $areaName => $areaItems) {
-        echo "\n<div id='$areaName' class='vertical_tabcontent' style='display:none'>";
-        tabContent($areaName, $areaItems);
-        echo "\n</div>"; 
-    }
-}
-
-function tabContent($areaName, $areaItems){
-    global $datePath;
-    global $idealPath;
-    startTable($areaName);
-    $areaCount = count($areaItems);
-    for ($index = 0; $index < $areaCount; $index++) {
-        echo "<tr>";
-        echo '<td><h3>' . str_replace("_", " ", $areaItems[$index]) . '</h3></td>';
-        echo printRow($datePath . "/".$areaName."_".$areaItems[$index]."_before.jpg");
-        echo printRow($datePath . "/".$areaName."_".$areaItems[$index]."_after.jpg");
-        echo printRow($idealPath. "/".$areaName."_".$areaItems[$index].".jpg");
-        echo "</tr>";
-    }
-    endTable();
-}
-setupKidTabs($kids, $areas);
 ?> 
-<script lang="javascript">
-
-// Get the element with id="defaultOpen" and click on it
-document.getElementById("defaultKid").click();
-//document.getElementById("defaultArea").click();
-
-</script>
 
 
-<script lang="javascript">
-function openTab(evt, tabName, orientation) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName(orientation + "_tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
-}
+  </body>
+</html> 
 
-</script>
 
