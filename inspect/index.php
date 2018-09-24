@@ -38,7 +38,7 @@ $areas["Viola"]             = array("daily_practice");
 makePage($kids);
 
 function makePage($kids){
-  echo "\n<h1>" . date("M d, Y") . "</h1>";
+  echo "\n<h4>" . date("M d, Y") . "</h4>";
   echo makeTabBar("h", array_keys($kids));
   foreach ($kids as $name => $items) {
     echo makeTabContent("h", $items, $name, "makeKidContent");

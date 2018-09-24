@@ -3,6 +3,7 @@
     overflow: hidden;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
+    width: 100%
 }
 
 /* Style the buttons inside the h_tab */
@@ -30,9 +31,5 @@
 /* Style the h_tab content */
 .h_tabcontent {
     display: none;
-    /*
-    padding: 6px 12px;
-    border: 1px dashed red;
-    */
-    border-top: none;
+    border: none;
 }

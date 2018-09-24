@@ -15,13 +15,12 @@
     display: block;
     background-color: inherit;
     color: black;
-    padding: 22px 16px;
+    padding: 12px 6px;
     width: 100%;
     border: none;
     outline: none;
     text-align: left;
     cursor: pointer;
-    transition: 0.3s;
     font-size: 17px;
 }
 
@@ -39,8 +38,7 @@
 .v_tabcontent {
     display: none;
     float: left;
-    padding: 0px 12px;
-    border: 1px solid #ccc;
+    border: none;
     width: 70%;
     border-left: none;
     height: 300px;
