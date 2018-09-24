@@ -170,8 +170,16 @@ function endTable(){
     return $result;
 }
 ?> 
-
-
+<!--
+resizeImage({
+    file: $image.files[0],
+    maxSize: 500
+}).then(function (resizedImage) {
+    console.log("upload resized image")
+}).catch(function (err) {
+    console.error(err);
+});
+-->
   </body>
 </html> 
 
