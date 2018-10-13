@@ -1,0 +1,109 @@
+<!--
+    one page to show the media players for one book
+    one page to filter the database until a book is selected
+-->
+
+<!--
+    load the library
+    display the table
+    filter the table
+-->
+<html>
+    <head>
+        <script lang="text/javascript" src="library2.js"></script>
+    </head>
+    <body>
+        <table border="1">
+            <tbody id="fillme">
+            </tbody>
+        </table>
+    <script>
+        function createTable(){
+            var showAllColumns = false;
+            return createHeaders(showAllColumns)
+                + createRows(showAllColumns);
+        }
+function createHeaders(showAllColumns){
+    var html = "<tr>";
+    if (showAllColumns) {
+        for (var key in library[0]){
+            html += "<th>" +  key + "</th>";
+        }
+    } else {
+        html += makeTitle("Title", 0); //"<th>Title</th>";
+        html += makeTitle("Author", 1); //"<th>Author</th>";
+        html += makeTitle("Series", 2); //"<th>Series</th>";
+        html += makeTitle("#", 3); //"<th>#</th>";
+    }
+    html += "</tr>"
+    return html;
+}
+function makeTitle(name, index){
+    //return "<th><input type='button' width='100%' value='" + name + "' onclick='sortTable("+index+")'/></th>";
+    return "<th><a href='#' onclick='sortTable("+index+")'/>"+name+"</a></th>";
+}
+function createRows(showAllColumns){
+    var html = "";
+    library.forEach( function(row){
+        if (row["Status"] == "Downloaded"){
+            html += createRow(row, showAllColumns);
+        }
+    });
+    return html;
+}
+function createRow(row, showAllColumns){
+    var html = "<tr>";
+    if (showAllColumns){
+        for (var key in row) {
+            html += "<td>" + row[key] + "</td>";
+        }
+    } else {
+        html += "<td>" + row["Title"] + "</td>";
+        html += "<td>" + row["Author"] + "</td>";
+        html += "<td>" + row["Series"] + "</td>";
+        html += "<td>" + row["Book Number"] + "</td>";
+    }
+    html += "</tr>"
+    return html;
+}
+document.getElementById("fillme").innerHTML = createTable();
+    </script>
+
+
+    <script>
+function sortTable(columnToSort) {
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("fillme");
+  switching = true;
+  // loop until no switching has been done
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[columnToSort];
+      y = rows[i + 1].getElementsByTagName("TD")[columnToSort];
+      //check if the two rows should switch place:
+      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}
+    </script>
+    </body>
+</html>

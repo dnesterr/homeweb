@@ -44,6 +44,17 @@ function makePage($kids){
     echo makeTabContent("h", $items, $name, "makeKidContent");
   }
 }
+
+function getAreasForKid($kid){
+    global $kids;
+    return $kids[$kid];
+}
+
+function getItemsForArea($areaName){
+    global $areas;
+    return $areas[$areaName];
+}
+
 function makeTabBar($orientation, $collection){
   $result = sprintf("\n  <div class='%s_tab'>", $orientation);
   foreach ($collection as $name) {
@@ -75,9 +86,10 @@ function makeTabContent($orientation, $collection, $id, $fcnToCall){
 
 function makeKidContent($kidName){
   global $kids;
-  $result = makeTabBar('v', $kids[$kidName]);
-  foreach ($kids[$kidName] as $areaName) {
-    $result .= makeTabContent('v', $kids[$kidName], $areaName, "makeInspectionTable");
+  $areasForKid = getAreasForKid($kidName);
+  $result = makeTabBar('v', $areasForKid);
+  foreach ($areasForKid as $areaName) {
+    $result .= makeTabContent('v', $areasForKid, $areaName, "makeInspectionTable");
   }
   return $result;
 }
@@ -100,9 +112,8 @@ function startTable($areaName){
 }
 
 function populateTable($areaName){
-  global $areas;
   $result = "";
-  $areaItems = $areas[$areaName];
+  $areaItems = getItemsForArea($areaName);
   $areaCount = count($areaItems);
   for ($index = 0; $index < $areaCount; $index++) {
     $inspectionSpot = $areaItems[$index];
