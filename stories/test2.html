@@ -1,109 +1,136 @@
-<!--
-    one page to show the media players for one book
-    one page to filter the database until a book is selected
--->
-
-<!--
-    load the library
-    display the table
-    filter the table
--->
 <html>
     <head>
         <script lang="text/javascript" src="library2.js"></script>
+        <script lang="text/javascript" src="util.js"></script>
     </head>
     <body>
         <table border="1">
             <tbody id="fillme">
             </tbody>
         </table>
-    <script>
-        function createTable(){
-            var showAllColumns = false;
-            return createHeaders(showAllColumns)
-                + createRows(showAllColumns);
-        }
-function createHeaders(showAllColumns){
+        <script>
+            <!--
+var defaultConfig = {
+    showAllColumns: false,
+    filters: {
+        State: "Downloaded",
+    }
+};
+function createTable(config){
+    document.getElementById("fillme").innerHTML =
+        createHeaders(config) + createRows(config);
+}
+createTable(defaultConfig);
+function createHeaders(config){
     var html = "<tr>";
-    if (showAllColumns) {
+    if (config.showAllColumns) {
+        var count = 0;
         for (var key in library[0]){
-            html += "<th>" +  key + "</th>";
+            html += makeTitle(key, count);
+            count += 1;
         }
     } else {
-        html += makeTitle("Title", 0); //"<th>Title</th>";
-        html += makeTitle("Author", 1); //"<th>Author</th>";
-        html += makeTitle("Series", 2); //"<th>Series</th>";
-        html += makeTitle("#", 3); //"<th>#</th>";
+        html += makeTitle("Title", 0);
+        html += makeTitle("Author", 1);
+        html += makeTitle("Series", 2);
+        html += makeTitle("#", 3);
     }
     html += "</tr>"
     return html;
 }
 function makeTitle(name, index){
-    //return "<th><input type='button' width='100%' value='" + name + "' onclick='sortTable("+index+")'/></th>";
     return "<th><a href='#' onclick='sortTable("+index+")'/>"+name+"</a></th>";
 }
-function createRows(showAllColumns){
+function createRows(config){
     var html = "";
     library.forEach( function(row){
-        if (row["Status"] == "Downloaded"){
-            html += createRow(row, showAllColumns);
+        var print = true;
+        for (var key in config.filters){
+            if (row[key] != config.filters[key]){
+                console.log(key + ": " + row[key] + " != " + config.filters[key]);
+                print = false;
+                break;
+            }
+        }
+        if (print){
+            html += createRow(row, config);
         }
     });
     return html;
 }
-function createRow(row, showAllColumns){
+function createRow(row, config){
     var html = "<tr>";
-    if (showAllColumns){
+    if (config.showAllColumns){
         for (var key in row) {
-            html += "<td>" + row[key] + "</td>";
+            html += makeCell(row, key, config); 
         }
     } else {
-        html += "<td>" + row["Title"] + "</td>";
-        html += "<td>" + row["Author"] + "</td>";
-        html += "<td>" + row["Series"] + "</td>";
-        html += "<td>" + row["Book Number"] + "</td>";
+        html += makeCell(row, "Series", config);
+        html += makeCell(row, "Author", config);
+        html += makeCell(row, "Title", config); 
+        html += makeCell(row, "Book Number", config);
+        html += makeCell(row, "Folder", config); 
     }
     html += "</tr>"
     return html;
 }
-document.getElementById("fillme").innerHTML = createTable();
+function makeCell(row, key, config){
+    if (key == "Title"){ 
+        return makeTitleLink(row, key, config); }
+    else {
+        return '<td><a href="#" onclick=\'filter("{0}", "{1}")\'>{1}</a></td>'.format(key, row[key]);
+    }
+}
+
+function makeTitleLink(row, key, config){
+    return '<td><a href="play.php?Folder=B:/Audio/Books/{0}">{1}</a></td>'.format(row["Folder"], row[key]);
+}
+
+function filter(key, value){
+    var clone = Object.assign({}, defaultConfig);
+    clone.filters[key] = value;
+    createTable(clone);
+}
+
+-->
     </script>
 
 
     <script>
-function sortTable(columnToSort) {
-  var table, rows, switching, i, x, y, shouldSwitch;
-  table = document.getElementById("fillme");
-  switching = true;
-  // loop until no switching has been done
-  while (switching) {
-    //start by saying: no switching is done:
-    switching = false;
-    rows = table.rows;
-    /*Loop through all table rows (except the
+        function sortTable(columnToSort) {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("fillme");
+            switching = true;
+            // loop until no switching has been done
+            while (switching) {
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /*Loop through all table rows (except the
     first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
-      //start by saying there should be no switching:
-      shouldSwitch = false;
-      /*Get the two elements you want to compare,
+                for (i = 1; i < (rows.length - 1); i++) {
+                    //start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /*Get the two elements you want to compare,
       one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName("TD")[columnToSort];
-      y = rows[i + 1].getElementsByTagName("TD")[columnToSort];
-      //check if the two rows should switch place:
-      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-        //if so, mark as a switch and break the loop:
-        shouldSwitch = true;
-        break;
-      }
-    }
-    if (shouldSwitch) {
-      /*If a switch has been marked, make the switch
+                    x = rows[i].getElementsByTagName("TD")[columnToSort];
+                    y = rows[i + 1].getElementsByTagName("TD")[columnToSort];
+                    //check if the two rows should switch place:
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    /*If a switch has been marked, make the switch
       and mark that a switch has been done:*/
-      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-      switching = true;
-    }
-  }
-}
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+-->
     </script>
     </body>
 </html>
