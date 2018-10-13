@@ -30,9 +30,9 @@ function createHeaders(config){
             count += 1;
         }
     } else {
-        html += makeTitle("Title", 0);
+        html += makeTitle("Series", 0);
         html += makeTitle("Author", 1);
-        html += makeTitle("Series", 2);
+        html += makeTitle("Title", 2);
         html += makeTitle("#", 3);
     }
     html += "</tr>"
@@ -69,7 +69,7 @@ function createRow(row, config){
         html += makeCell(row, "Author", config);
         html += makeCell(row, "Title", config); 
         html += makeCell(row, "Book Number", config);
-        html += makeCell(row, "Folder", config); 
+        //html += makeCell(row, "Folder", config); 
     }
     html += "</tr>"
     return html;
@@ -83,7 +83,7 @@ function makeCell(row, key, config){
 }
 
 function makeTitleLink(row, key, config){
-    return '<td><a href="play.php?Folder=B:/Audio/Books/{0}">{1}</a></td>'.format(row["Folder"], row[key]);
+    return '<td><a href="play.php?Folder=books/{0}">{1}</a></td>'.format(row["Folder"], row[key]);
 }
 
 function filter(key, value){

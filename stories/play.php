@@ -1,17 +1,19 @@
+<script>
+
+</script>
 <?php
 $directory = $_GET["Folder"];
 $files = scandir( $directory  );
-echo "<ul>";
 foreach ( $files as $file) {
     if (endsWith($file, "mp3")){
-        echo "<li><audio controls><source src='${file}' type='audio/mpeg'/></audio></li>";
+        #echo "<br/><a href='${directory}/${file}' onclick='swapWithPlayer
+        echo "<br/><audio controls><source src='${directory}/${file}' type='audio/mpeg'/></audio>";
     } elseif (endsWith($file, "jpg")){
-        echo "<li><img src='${file}'/></li>";
+        echo "<br/><img width='100' height='100' src='${directory}/${file}'/>";
     } else {
-        echo "<li>${file}</li>";
+        echo "<!--<li>${directory}/${file}</li>-->";
     }
 }
-echo "</ul>";
 
 
 function endsWith($haystack, $needle)
