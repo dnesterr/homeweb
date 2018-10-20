@@ -8,34 +8,36 @@
 </head>
 <body>
 
+  <button id="show_json">show_json</button>
   <button id="add_child">add child</button>
   <button id="add_sibling">add sibling</button>
-  <button disabled id="move_a_node">move a node</button>
+  <button id="delete">delete</button>
   <button id="rename">rename</button>
   <button disabled id="mass_insert">mass insert</button>
-  <br/>
+  <button disabled id="move_a_node">move a node</button>
+  <hr/>
   <button disabled id="create_link_to_onenote">create a link to onenote</button>
   <button disabled id="follow_link_to_onenote">follow a link to onenote</button>
   <button disabled id="complete_an_item">complete an item</button>
   <button disabled id="uncomplete_an_item">uncomplete an item</button>
-  <br/>
+  <hr/>
   <button disabled id="filter_by_context">filter by context</button>
   <button disabled id="filter_by_tag">filter by tag</button>
   <button disabled id="tag_node">tag node</button>
   <button disabled id="define_tag">define tag</button>
-  <br/>
+  <hr/>
   <button disabled id="undo">undo</button>
   <button disabled id="redo">redo</button>
-  <button disabled id="save">save</button>
+  <button id="save">save</button>
   <button disabled id="background_save">background save</button>
   <button disabled id="work_offline">work offline</button>
-  <br/>
+  <hr/>
   <button disabled id="copy">copy</button>
   <button disabled id="paste">paste</button>
   <button disabled id="group_copy">group copy</button>
   <button disabled id="group_paste">group paste</button>
   <button disabled id="navigate_to_pre-filtered_display">navigate to pre-filtered display</button>
-  <br/>
+  <hr/>
   <!-- built in
   <button id="expand">expand</button>
   <button id="collapse">collapse</button>
@@ -50,38 +52,45 @@
 
   <!-- 4 include the jQuery library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
-  <!--<script src="dist/libs/jquery.js"></script>-->
   <!-- 5 include the minified jstree source -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-  <!--<script src="dist/jstree.min.js"></script>-->
   <script>
       <!-- this is the same as $(document).ready(function....); -->
-      $(function () {
-          $('#jstree2').jstree({'plugins':["wholerow","checkbox", "dnd"], 'core' : {
-              "check_callback" : true, 
-              'data' : [
-                  {
-                      "text" : "<a href='http://www.google.com'>Same but with checkboxes</a>",
-                      "children" : [
-                          { "data": {"foo": "bar"}, "text" : "initially selected", "state" : { "selected" : true } },
-                          { "data": {"foo": "bar"}, "text" : "custom icon URL", "icon" : "//jstree.com/tree-icon.png" },
-                          { "data": {"foo": "bar"}, "text" : "initially open", "state" : { "opened" : true }, "children" : [ "Another node" ] },
-                          { "data": {"foo": "bar"}, "text" : "custom icon class", "icon" : "glyphicon glyphicon-leaf" }
-                      ]
-                  },
-                  "And wholerow selection"
-              ]
-          }});
-      });
+$(function () { 
+    populateTree(); 
+    $("button:disabled").hide();
+});
+function populateTree()
+{
+    $.jstree.defaults.checkbox.whole_node = false;
+    $.jstree.defaults.checkbox.three_state = false;
+    $.jstree.defaults.checkbox.tie_selection = false;
+    $('#jstree2').jstree({'plugins':["checkbox", "dnd"], 'core' : {
+        "check_callback" : true, 
+        'data' : [
+            {
+                "text" : "<a href='http://www.google.com'>Same but with checkboxes</a>",
+                "children" : [
+                    { "data": {"foo": "bar"}, "text" : "initially selected", "state" : { "selected" : true } },
+                    { "data": {"foo": "bar"}, "text" : "custom icon URL", "icon" : "//jstree.com/tree-icon.png" },
+                    { "data": {"foo": "bar"}, "text" : "initially open", "state" : { "opened" : true }, "children" : [ "Another node" ] },
+                    { "data": {"foo": "bar"}, "text" : "custom icon class", "icon" : "glyphicon glyphicon-leaf" },
+                    { "text": "Add child", "state": {"checked": true} },
+                    { "text": "Add sibling", "state": {"checked": true} },
+                    { "text": "Rename", "state": {"checked": true} },
+                    { "text": "Move by mouse", "state": {"checked": true} },
+                    { "text": "And wholerow selection"}
+                ]
+            },
+        ]
+    }});
+}
 function tree(){
     return $("#jstree2").jstree();
 }
-$("#expand_all").on("click", function(){ 
-    tree().open_all();
-});
-$("#collapse_all").on("click", function(){ 
-    tree().close_all();
-});
+$("#delete").on("click", function(){ tree().delete_node(tree().get_selected());} );
+$("#expand_all").on("click", function(){ tree().open_all(); });
+$("#collapse_all").on("click", function(){ tree().close_all(); });
 $("#add_child").on("click", function(){ 
     var selectedId = tree().get_selected()[0];
     var created = tree().create_node(selectedId, "new");
@@ -101,6 +110,10 @@ $("#rename").on("click", function(){
     var selectedId = tree().get_selected()[0];
     tree().edit(selectedId);
 });
+$("#show_json").on("click", function(){ 
+    console.log(JSON.stringify(tree().get_json("#", {"flat": true})));
+});
+
 
 
 
