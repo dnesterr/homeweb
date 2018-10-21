@@ -1,0 +1,30 @@
+        'data' : [
+            {
+                "text" : "Minimum Functionality",
+                "children" : [
+                    "Add item",
+                    "Complete item",
+                    "Remove item",
+                    "Save everything",
+                    "Reparent item",
+                ]
+            },
+            {
+                "text": "Phase 2",
+                "children" : [
+                    "Tag item",
+                    "Filter by tag",
+                    "Show only leaves",
+                    "Show only projects",
+                    "Show/hide completed items"
+                    ]
+            },
+            {
+                "test": "Phase 3",
+                "children": [
+                    "Multi-add",
+                    "Move using keyboard",
+                    ]
+            }
+
+        ]
