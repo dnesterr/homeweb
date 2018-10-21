@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8">
   <title>jsTree test</title>
+  <link rel="stylesheet" href="sidebar.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 </head>
 <body>
-    <div id="buttons">
+    <div id="buttons" class="sidebar">
         <button id="show_json">show_json</button>
         <button id="add_child">add child</button>
         <button id="add_sibling">add sibling</button>
@@ -16,29 +17,24 @@
         <button id="rename">rename</button>
         <button disabled id="mass_insert">mass insert</button>
         <button disabled id="move_a_node">move a node</button>
-        <hr/>
         <button disabled id="create_link_to_onenote">create a link to onenote</button>
         <button disabled id="follow_link_to_onenote">follow a link to onenote</button>
         <button disabled id="complete_an_item">complete an item</button>
         <button disabled id="uncomplete_an_item">uncomplete an item</button>
-        <hr/>
         <button disabled id="filter_by_context">filter by context</button>
         <button disabled id="filter_by_tag">filter by tag</button>
         <button disabled id="tag_node">tag node</button>
         <button disabled id="define_tag">define tag</button>
-        <hr/>
         <button disabled id="undo">undo</button>
         <button disabled id="redo">redo</button>
         <button id="save">save</button>
         <button disabled id="background_save">background save</button>
         <button disabled id="work_offline">work offline</button>
-        <hr/>
         <button disabled id="copy">copy</button>
         <button disabled id="paste">paste</button>
         <button disabled id="group_copy">group copy</button>
         <button disabled id="group_paste">group paste</button>
         <button disabled id="navigate_to_pre-filtered_display">navigate to pre-filtered display</button>
-        <hr/>
         <!-- built in
             <button id="expand">expand</button>
             <button id="collapse">collapse</button>
@@ -47,11 +43,9 @@
         <button id="expand_all">expand all</button>
         <button disabled id="show_only_subtree">show only subtree</button>
         <button disabled id="mass_tag">mass tag</button>
-        <hr/>
     </div>
 
-  <div id="jstree2"></div>
-  <div id="tree"></div>
+  <div id="jstree2" class="main"></div>
 
   <script>
 $(document).ready(function () { 
@@ -60,7 +54,7 @@ $(document).ready(function () {
 });
   </script>
   <script src="gtd.js"></script>
-  <div id="messages"></div>
+  <div id="messages" class="main"></div>
 </body>
 </html>
 
