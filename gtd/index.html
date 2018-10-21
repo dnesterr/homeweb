@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8">
   <title>jsTree test</title>
-  <!-- 2 load the theme CSS file -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
@@ -52,14 +51,13 @@
     </div>
 
   <div id="jstree2"></div>
+  <div id="tree"></div>
 
   <script>
-      <!-- this is the same as $(document).ready(function....); -->
-$(function () { 
+$(document).ready(function () { 
     populateTree(); 
     $("button:disabled").hide();
 });
-
   </script>
   <script src="gtd.js"></script>
   <div id="messages"></div>

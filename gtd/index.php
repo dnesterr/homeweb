@@ -8,7 +8,7 @@ foreach ( $files as $file) {
     $path = $directory . '/' . $file;
     if (endsWith($file, "gtd")){
         $label = substr($file, -10, 6);
-        echo "\n<br/><a id='${label}' href=\"gtd.html?tree=${file}\"'>${label}</a>";
+        echo "\n<br/><a id='${label}' href=\"index.html?tree=${file}\"'>${label}</a>";
     }
 }
 

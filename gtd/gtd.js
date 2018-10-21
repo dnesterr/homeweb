@@ -1,42 +1,26 @@
-function populateTree()
+function populateTree() {
+    //WithFile(filename){
+    var filename = "saveme.gtd";
+    $.getJSON(filename, function(json) {
+        console.log(json); // this will show the info it in firebug console
+        populateTreeUsingLoadedData(json);
+    });
+}
+function populateTreeUsingLoadedData(loadedData)
 {
+
     $.jstree.defaults.checkbox.whole_node = false;
     $.jstree.defaults.checkbox.three_state = false;
     $.jstree.defaults.checkbox.tie_selection = false;
-    $('#jstree2').jstree({'plugins':["checkbox", "dnd"], 'core' : {
-        "check_callback" : true, 
-        'data' : [
-            {
-                "text" : "Minimum Functionality",
-                "children" : [
-                    "Add item",
-                    "Complete item",
-                    "Remove item",
-                    "Save everything",
-                    "Reparent item"
-                ]
-            },
-            {
-                "text": "Phase 2",
-                "children" : [
-                    "Tag item",
-                    "Filter by tag",
-                    "Show only leaves",
-                    "Show only projects",
-                    "Show/hide completed items"
-                    ]
-            },
-            {
-                "text": "Phase 3",
-                "children": [
-                    "Multi-add",
-                    "Move using keyboard",
-                    "link to detail page (wiki, onenote)"
-                    ]
+    $('#jstree2').jstree(
+        {
+            'plugins':["checkbox", "dnd"],
+            'core' : {
+                "check_callback" : true, 
+                'data' : loadedData
             }
-
-        ]
-    }});
+        }
+    );
 }
 function tree(){
     return $("#jstree2").jstree();
@@ -83,9 +67,7 @@ $("#save").on("click", function(){
     var whatToSave = JSON.stringify(tree().get_json("#", {"flat": true}));
     jQuery.post("save_tree.php", {"filename": "saveme.gtd", "content": whatToSave}, 
         function(data){ 
-            //$("#messages").innerHtml = data; 
             document.getElementById("messages").innerHTML = data;
-            //alert(data); 
         });
 });
 
