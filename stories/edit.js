@@ -1,6 +1,6 @@
 var defaultConfig = {
     showAllColumns: false,
-    showRows: true,
+    showRows: false,
     filters: {
         State: "Downloaded",
     }
@@ -30,7 +30,6 @@ function createHeaders(config){
         if (config.showRows){
             html += makeTitle("#", 3);
         }
-        html += makeTitle("Added", 2);
     }
     html += "</tr>"
     return html;
@@ -41,11 +40,9 @@ function makeTitle(name, index){
 }
 
 function sortLibraryBy(name){
-    var sign = 1;
-    if (name == "Added") sign = -1;
     library.sort( function(a,b) { 
-        if (a[name] < b[name]) { return -1 * sign;} 
-        if (a[name] > b[name]) { return +1 * sign;} 
+        if (a[name] < b[name]) { return -1;} 
+        if (a[name] > b[name]) { return +1;} 
         return 0;
     } 
     );
@@ -68,11 +65,7 @@ function showOnly(name, index){
 function createRows(config){
     var html = "";
     var count = 0;
-    if (Object.keys(config.filters).length == 1) {
-        sortLibraryBy("Added");
-    } else {
-        sortLibraryBy("Book Number");
-    }
+    sortLibraryBy("Book Number");
     library.forEach( function(row){
         count++;
         var print = true;
@@ -101,7 +94,6 @@ function createRow(row, config){
         html += makeCell(row, "Author", config);
         html += makeCell(row, "Title", config); 
         html += makeCell(row, "Book Number", config);
-        html += makeCell(row, "Added", config);
         //html += makeCell(row, "Folder", config); 
     }
     html += "</tr>"
@@ -127,4 +119,3 @@ function filter(key, value){
     createTable(clone);
 }
 createTable(defaultConfig);
-//showOnly("Added", 2);
